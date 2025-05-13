@@ -51,5 +51,6 @@ class CourseSerializer(ModelSerializer):
             category=validated_data["category"],
             price=validated_data["price"],
             status=validated_data["status"],
+            thumbnail=validated_data["thumbnail"]
         )
         return course
