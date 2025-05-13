@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
 import {
   Select,
   SelectContent,
@@ -10,22 +11,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@components/ui/Select";
-import img from "@public/card-test.png";
 import { Card } from "@/components/ui/Card";
-import BackgroundImage from "@/components/BackgroundImage";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
 import { useRouter } from "next/navigation";
+import { UploadCloud } from "lucide-react";
 
 function CreateCoursePage() {
-
   const { data: session } = useSession();
   const router = useRouter();
-
-
-
+  const [previewThumbnail, setPreviewThumbnail] = useState(null);
 
   const initialFormState = {
     title: "",
@@ -35,36 +32,57 @@ function CreateCoursePage() {
     estimated_duration: "",
     price: "",
     status: "draft",
+    thumbnail: null,
   };
 
   const [formState, setFormState] = useState(initialFormState);
+
+  const handleThumbnailChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Update form state with the file
+    setFormState((prevState) => ({
+      ...prevState,
+      thumbnail: file,
+    }));
+
+    // Create a preview URL
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPreviewThumbnail(reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = session.accessToken;
     const url = "http://localhost:8000/courses/";
-    console.log(token);
-    console.log(url, formState, {
-      headers: {
-        Authorization: `Token ${token}`,
-      },
+
+    // Create FormData to handle file upload
+    const formData = new FormData();
+
+    // Add all form fields to FormData
+    Object.keys(formState).forEach((key) => {
+      if (key !== "thumbnail" || formState[key] !== null) {
+        formData.append(key, formState[key]);
+      }
     });
 
     try {
-      const response = await axios.post(url, formState, {
+      const response = await axios.post(url, formData, {
         headers: {
           Authorization: `Token ${token}`,
+          "Content-Type": "multipart/form-data",
         },
       });
 
       console.log(response);
-
       const courseData = response.data;
-
       setFormState(initialFormState);
-
+      setPreviewThumbnail(null);
       router.push(`/courses/${courseData.id}`);
-      
     } catch (error) {
       console.error(error);
     }
@@ -85,19 +103,45 @@ function CreateCoursePage() {
       ...prevState,
       [id]: value,
     }));
-    console.log(formState)
   };
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="grid grid-cols-5 gap-6 px-0 page-wrapper w-full "
+      className="grid grid-cols-5 gap-6 px-0 page-wrapper w-full"
     >
-      <Card className="col-start-2 col-span-2 h-full overflow-clip p-4 border-2 dark:bg-transparent relative">
-       
-          <BackgroundImage className={"z-0 h-auto"} image={img} />
-     
-      </Card>
+      <div className="col-start-2 col-span-2 h-full">
+        <Label htmlFor="thumbnail-upload" className="cursor-pointer block h-full">
+          <Card className="h-full overflow-clip p-4 border-2 justify-center dark:bg-transparent relative">
+            {previewThumbnail ? (
+              <div className="relative size-full">
+                <Image
+                  src={previewThumbnail}
+                  alt="Course thumbnail preview"
+                  fill
+                  className="object-cover rounded-md"
+                />
+              </div>
+            ) : (
+              <div className="h-full flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-md">
+                <UploadCloud className=" text-gray-400" />
+                <p className="mt-2 text-sm text-gray-500">
+                  Click to upload course thumbnail
+                </p>
+                <p className="text-xs text-gray-400">PNG, JPG, GIF up to 5MB</p>
+              </div>
+            )}
+            <Input
+              id="thumbnail-upload"
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleThumbnailChange}
+            />
+          </Card>
+        </Label>
+      </div>
+
       <div className="flex flex-col justify-start p-4 gap-6 ">
         <Label className="text-2xl w-full" htmlFor="title">
           Course Title
@@ -135,7 +179,6 @@ function CreateCoursePage() {
           htmlFor="duration"
         >
           Estimated Duration ( In Hours )
-          {/* estimated duration cant be minor than 1 */}
           <Input
             id="estimated_duration"
             type="number"
@@ -180,9 +223,9 @@ function CreateCoursePage() {
         </Label>
       </div>
 
-      <div className="flex flex-col w-full col-start-2 col-span-3  gap-12 ">
+      <div className="flex flex-col w-full col-start-2 col-span-3 gap-12">
         <Label
-          className="w-full font-thin text-md flex flex-col items-start gap-"
+          className="w-full font-thin text-md flex flex-col items-start gap-2"
           htmlFor="description"
         >
           Course Description
@@ -195,12 +238,7 @@ function CreateCoursePage() {
             onChange={handleInputChange}
           />
         </Label>
-        <Button
-          type="submit"
-          
-        >
-          Create Course
-        </Button>
+        <Button type="submit">Create Course</Button>
       </div>
     </form>
   );
