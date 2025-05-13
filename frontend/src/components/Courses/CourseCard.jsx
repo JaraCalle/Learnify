@@ -3,23 +3,16 @@ import { jsxDEV } from "react/jsx-dev-runtime";
 import React from "react";
 import {
   Card,
-  CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/Card";
 import Image from "next/image";
-import cardImage from "@public/card-test.png";
 import { Button } from "@components/ui/Button";
 import BackgroundBlur from "@components/BackgroundBlur";
 import Link from "next/link";
 import CourseDetails from "@components/Courses/CourseDetails";
-import { useCart } from "@/providers/CartProvider";
-import {
-  MdOutlineShoppingCart,
-  MdOutlineShoppingCartCheckout,
-} from "react-icons/md";
 
 function CourseCard({ course }) {
 
@@ -38,13 +31,14 @@ function CourseCard({ course }) {
       href={`/courses/${course.id}`}
     >
       <Card className="flex-row justify-start gap-0 dark:bg-transparent p-0 overflow-clip border-2 bg-white h-72 relative">
-       
-
         {/* Existing Card Content */}
         <div className="relative w-2/3 h-">
           <Image
             alt="Grid"
-            src={cardImage}
+            src={
+              course.thumbnail_url ||
+              "https://support.heberjahiz.com/hc/article_attachments/21013076295570"
+            }
             quality={100}
             fill
             sizes="100vw"
