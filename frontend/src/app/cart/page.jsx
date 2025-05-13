@@ -1,18 +1,16 @@
 "use client";
 import React from "react";
+import { useRouter } from "next/navigation";
 import { useCart } from "@/providers/CartProvider";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import { MdShoppingCart } from "react-icons/md";
 import CourseOverview from "@/components/Courses/CourseOverview";
-import OrderSummary from "./components/OrderSummary";
-
-
+import OrderSummary from "../../components/Cart/OrderSummary";
 
 export default function CartPage() {
+  const router = useRouter();
   const { cart, removeFromCart, totalPrice, clearCart } = useCart();
-
-
 
   if (cart.length === 0) {
     return (
@@ -33,14 +31,9 @@ export default function CartPage() {
     <div className="page-wrapper">
       <div className="flex flex-col lg:flex-row justify-around gap-8">
         <div className="w-full lg:w-2/3 flex flex-col gap-12">
-  
-
-          {cart.map((course) => {
-            
-            return  <CourseOverview  key={course.id} course={course} />;
-            
-          })}
-         
+          {cart.map((course) => (
+            <CourseOverview key={course.id} course={course} />
+          ))}
 
           <div className="mt-8 pt-6 border-t">
             <div className="flex justify-between items-center mb-6">
@@ -56,7 +49,11 @@ export default function CartPage() {
 
         {/* Order Summary - Right Side (Smaller) */}
         <div className="w-full lg:w-1/4 lg:sticky lg:top-24 lg:self-start">
-          <OrderSummary totalPrice={totalPrice} itemCount={cart.length} />
+          <OrderSummary
+            totalPrice={totalPrice}
+            itemCount={cart.length}
+            onCheckout={() => router.push("/cart/checkout")}
+          />
         </div>
       </div>
     </div>
