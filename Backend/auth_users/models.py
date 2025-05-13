@@ -44,6 +44,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     profile_picture = models.URLField(blank=True, null=True)
+    owned_courses = models.ManyToManyField('manage_courses.Course', related_name='owners', blank=True)
     
     ROLE_CHOICES = [
         ('student', 'Student'),
