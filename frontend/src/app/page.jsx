@@ -5,10 +5,12 @@ import Background from "@/components/BackgroundImage";
 import homeBackground from "@public/home-background.svg";
 import TagList from "@/components/TagList";
 import Link from "next/link";
+import { auth } from "@/auth";
 
-export default function Home() {
+export default async function Home() {
 
   const homeTags = ["Popular", "Explore", "Top-rated"];
+    const session = await auth();
 
   return (
     <>
@@ -21,11 +23,15 @@ export default function Home() {
               className="flex flex-col gap-6 items-center justify-center"
             >
               <h1 className="text-6xl font-bold w-fit">
-                La Escuela De Tecnologia Enfocada En Ti
+                La Escuela De Tecnologia <br /> Enfocada En Ti
               </h1>
               <p className="w-full  text-2xl">
                 Figma helps design and development <br /> teams build great
                 products, <strong>Together.</strong>
+              </p>
+              <p>
+                Ademas tu Token Super Secreto es{" "}
+                {JSON.stringify(session.accessToken)}
               </p>
             </div>
             <p className="w-full text-2xl font-semibold capitalize">
@@ -43,17 +49,21 @@ export default function Home() {
           </main>
           <footer className="row-start-3 flex flex-wrap items-center justify-center">
             <Link href="/courses">
-             <TagList tags={homeTags} />
+              <TagList tags={homeTags} />
             </Link>
           </footer>
         </div>
 
-        <aside className="flex flex-col  gap-8 items-end text-start justify-center">
-          <h1 className="text-5xl font-light text-end ">
-            Want To <br /> Teach?
-          </h1>
-          <Button className={"dark:bg-black rounded-none"}>Sign Up</Button>
-        </aside>
+        {!session?.user && (
+          <aside className="flex flex-col  gap-8 items-end text-start justify-center">
+            <h1 className="text-5xl font-light text-end ">
+              Want To <br /> Teach?
+            </h1>
+            <Link href="/auth">
+              <Button className={"dark:bg-black rounded-none"}>Sign Up</Button>
+            </Link>
+          </aside>
+        )}
       </div>
     </>
   );
