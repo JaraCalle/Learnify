@@ -1,8 +1,6 @@
 "use client";
 import React from "react";
-import img from "@public/card-test.png";
 import { CardDescription } from "@/components/ui/Card";
-import BackgroundImage from "@/components/BackgroundImage";
 import ReviewStars from "@/components/Courses/ReviewStars";
 import CourseDetails from "@/components/Courses/CourseDetails";
 import BackgroundBlur from "@/components/BackgroundBlur";
@@ -10,21 +8,30 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { useCart } from "@/providers/CartProvider";
 import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { IoMdClose } from "react-icons/io";
+import { useSession } from "next-auth/react";
 import {
   MdOutlineShoppingCart,
   MdOutlineShoppingCartCheckout,
+  MdDelete,
 } from "react-icons/md";
+import Image from "next/image";
 
 function CourseOverview({ course, className, isCart }) {
+  const path = usePathname();
+  const isCartPath = path === "/cart";
+  const { data: session } = useSession();
+  const router = useRouter();
 
-    const path = usePathname();
-    const isCartPath = path === "/cart";
-
-    console.log('RACC INSTANCE',JSON.stringify(course));
   const { addToCart, removeFromCart, isInCart } = useCart();
 
   const handleCartAction = () => {
+    if (!session) {
+      router.push("/auth");
+      return;
+    }
+
     if (isInCart(course.id)) {
       removeFromCart(course.id);
     } else {
@@ -34,9 +41,7 @@ function CourseOverview({ course, className, isCart }) {
 
   const removeCourse = () => {
     removeFromCart(course.id);
-    }
-
-
+  };
 
   return (
     <div
@@ -51,8 +56,16 @@ function CourseOverview({ course, className, isCart }) {
         </div>
       )}
       <Card className="w-3/5 h-[450px] p-4 border-2 dark:bg-transparent">
-        <div className={"relative h-full rounded overflow-clip "}>
-          <BackgroundImage className={"z-0 h-auto"} image={img} />
+        <div className="relative size-full">
+          <Image
+            src={
+              course.thumbnail_url ||
+              "https://support.heberjahiz.com/hc/article_attachments/21013076295570"
+            }
+            alt="Course thumbnail preview"
+            fill
+            className="object-cover rounded-md"
+          />
         </div>
       </Card>
       <div className="flex flex-col  w-2/5 gap-8 justify-between">
