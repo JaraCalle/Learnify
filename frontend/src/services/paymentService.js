@@ -43,7 +43,6 @@ export const createPaymentIntent = async (amount, accessToken) => {
 export const confirmPayment = async (
   paymentIntentId,
   paymentMethodId,
-  courseIds,
   accessToken
 ) => {
   try {
@@ -52,7 +51,6 @@ export const confirmPayment = async (
       {
         paymentIntentId,
         paymentMethodId,
-        courseIds,
       },
       {
         headers: {
