@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect }   from "react";
 import { CardDescription } from "@/components/ui/Card";
 import ReviewStars from "@/components/Courses/ReviewStars";
 import CourseDetails from "@/components/Courses/CourseDetails";
@@ -17,32 +17,66 @@ import {
   MdDelete,
 } from "react-icons/md";
 import Image from "next/image";
+import { addToCart, removeFromCart, getCart } from "@/services/cartService";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
-function CourseOverview({ course, className, isCart }) {
+
+
+function CourseOverview({ course, className }) {
   const path = usePathname();
   const isCartPath = path === "/cart";
   const { data: session } = useSession();
   const router = useRouter();
+  const [isInCart, setIsInCart] = useState(false);
 
-  const { addToCart, removeFromCart, isInCart } = useCart();
+
+  
+
+  const { data: cart } = useQuery({
+    queryKey: ["cart"],
+    queryFn: getCart,
+  });
+
+
+  
+
+  const { mutate: addToCartMutation } = useMutation({
+    mutationFn: addToCart,
+  });
+
+  const { mutate: removeFromCartMutation } = useMutation({
+    mutationFn: removeFromCart,
+  });
+
+
+
+  useEffect(() => {
+    setIsInCart(cart.courses.some((item) => item.id === course.id));
+  }, [cart]);
+
+
+  const handleRemoveFromCart = () => {
+    removeFromCartMutation(course.id);
+  };
+
+  
+
 
   const handleCartAction = () => {
     if (!session) {
       router.push("/auth");
       return;
     }
-
-    if (isInCart(course.id)) {
-      removeFromCart(course.id);
+    if (isInCart) { 
+      handleRemoveFromCart();
+      setIsInCart(false);
     } else {
-      addToCart(course);
+      addToCartMutation(course.id);
+      setIsInCart(true);
     }
   };
 
-  const removeCourse = () => {
-    removeFromCart(course.id);
-  };
-
+  
   return (
     <div
       className={`flex w-full relative items-stretch gap-12 max-w-7xl ${className}`}
@@ -50,7 +84,7 @@ function CourseOverview({ course, className, isCart }) {
       {isCartPath && (
         <div className="absolute top-0 right-0">
           <IoMdClose
-            onClick={removeCourse}
+            onClick={handleRemoveFromCart}
             className="size-8 text-neutral-800 cursor-pointer hover:fill-white transition-colors duration-300"
           />
         </div>
@@ -81,11 +115,11 @@ function CourseOverview({ course, className, isCart }) {
         <Button className={"w-fit"}>{course.price} USD</Button>
 
         {!isCartPath &&
-          (isInCart(course.id) ? (
+          (isInCart ? (
             <Button
               variant={"destructive"}
               className={"w-fit"}
-              onClick={removeCourse}
+              onClick={() => removeFromCartMutation(course.id)}
             >
               <MdOutlineShoppingCartCheckout className="mr-2" />
               Remove from Cart
