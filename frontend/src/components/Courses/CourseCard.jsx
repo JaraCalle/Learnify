@@ -16,10 +16,12 @@ import CourseDetails from "@components/Courses/CourseDetails";
 import { cn } from "@/lib/utils/cn";
 import { getOwnedCourses } from "@/services/courseService";
 import { useQuery } from "@tanstack/react-query";
+import { usePathname } from "next/navigation";
 
 function CourseCard({ course, className = "", description = true }) {
 
-  const [isOwned, setIsOwned] = useState(false);
+  const pathname = usePathname();
+  const [isOwned, setIsOwned] = useState(pathname.includes("owned") );
 
   const { data: ownedCourses } = useQuery({
     queryKey: ["ownedCourses"],
