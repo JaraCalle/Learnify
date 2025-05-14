@@ -3,7 +3,7 @@
 import React from "react";
 import CourseCard from "@components/Courses/CourseCard";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { fetchCourses } from "@services/courseService";
+import { getCourses } from "@services/courseService";
 import { useInView } from "react-intersection-observer";
 import { useEffect } from "react";
 import { Spinner } from "@components/ui/Spinner";
@@ -21,7 +21,7 @@ function Courses({ searchParams }) {
     error,
   } = useInfiniteQuery({
     queryKey: ["courses", search],
-    queryFn: ({ pageParam = 1 }) => fetchCourses({ page: pageParam, search }),
+    queryFn: ({ pageParam = 1 }) => getCourses({ page: pageParam, search }),
     getNextPageParam: (lastPage) => {
       if (lastPage.next) {
         const url = new URL(lastPage.next);
