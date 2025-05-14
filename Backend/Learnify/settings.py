@@ -39,7 +39,7 @@ ALLOWED_HOSTS = [
     frontend_domain,
     'localhost',
     '127.0.0.1',
-    'learnify-deploy-1.onrender.com'  # Your production domain,
+    'learnify-deploy-1.onrender.com',  # Your production domain,
     '54.175.97.38'
 ]
 
