@@ -19,6 +19,9 @@ def create_payment_intent(request):
     try:
         amount = request.data.get('amount')
         currency = request.data.get('currency', 'usd')
+        
+        print('amount', amount)
+        print('currency', currency)
 
         # Create a PaymentIntent with the order amount and currency
         intent = stripe.PaymentIntent.create(
@@ -46,7 +49,10 @@ def confirm_payment(request):
     try:
         payment_intent_id = request.data.get('paymentIntentId')
         payment_method_id = request.data.get('paymentMethodId', None)
-        course_ids = request.data.get('courseIds', [])
+        
+        # Modify the payment intent
+        stripe.PaymentIntent.modify(payment_intent_id, payment_method=payment_method_id)
+        intent = stripe.PaymentIntent.retrieve(payment_intent_id)
         
         #get the access token from the request header without the Token prefix
         access_token = request.headers.get('Authorization', None)
@@ -61,29 +67,17 @@ def confirm_payment(request):
             )
         
         user = User.objects.get(auth_token=access_token)
+        cart = user.cart
+        print('cart', cart)
         
         if not user:
             return Response(
                 {'message': 'User not found'},
                 status=status.HTTP_400_BAD_REQUEST
-            )
-            
-        courses = Course.objects.filter(id__in=course_ids)
-        
-        cart = user.cart
-        
-        for course in courses:
-            cart.courses.add(course)
-        
-        cart.total_price = sum(course.price for course in cart.courses.all())
-        cart.save()
-        
-        
-
-            
+            )  
         order = Order.objects.create(
             user=user,
-            total_price=cart.total_price,
+            total_price=intent.amount / 100,
             status="pending"
         )
         
@@ -92,22 +86,11 @@ def confirm_payment(request):
             
             
         user.orders.add(order)
-        user.cart = cart
         user.save()
-        
-        
-        
-        
-        
-
-        # Modify the payment intent
-        stripe.PaymentIntent.modify(payment_intent_id, payment_method=payment_method_id)
-        intent = stripe.PaymentIntent.retrieve(payment_intent_id)
         
         # Verify the payment intent
 
-        intent = intent.confirm(payment_method=payment_method_id, return_url="http://localhost:3000/")
-        
+        intent = intent.confirm(payment_method=payment_method_id, return_url="http://localhost:3000/")   
 
         print('intent', intent)
         
@@ -124,10 +107,9 @@ def confirm_payment(request):
         order.status = "completed"
         order.save()
         
-        for course in courses:
+        for course in cart.courses.all():
             user.owned_courses.add(course)
         user.save()
-        
         
         
         
@@ -142,8 +124,7 @@ def confirm_payment(request):
         )
 
         # Create payment course records
-        for course_id in course_ids:
-            course = Course.objects.get(id=course_id)
+        for course in cart.courses.all():
             PaymentCourse.objects.create(
                 payment=payment,
                 course=course,
