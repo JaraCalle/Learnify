@@ -1,5 +1,5 @@
-# Use Node.js LTS version
-FROM node:20-alpine
+# Build stage
+FROM node:20-alpine AS builder
 
 # Set working directory
 WORKDIR /app
@@ -13,15 +13,31 @@ RUN npm install
 # Copy all files
 COPY . .
 
-# Build the application
+# Increase Node.js memory limit and add optimization flags
+ENV NODE_OPTIONS="--max-old-space-size=4096 --max-semi-space-size=512"
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# Build the application with production optimization
 RUN npm run build
 
-# Expose port 80
-EXPOSE 80
+# Production stage
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Copy built assets from builder
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/node_modules ./node_modules
+
+# Expose port 3000
+EXPOSE 3000
 
 # Set environment variables
-ENV PORT=80
 ENV NODE_ENV=production
+ENV PORT=3000
+ENV NEXT_TELEMETRY_DISABLED=1
 
 # Start the application
 CMD ["npm", "start"] 

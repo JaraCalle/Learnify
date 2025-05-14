@@ -1,10 +1,6 @@
 # Use Python 3.11 slim image
 FROM python:3.11-slim
 
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-
 # Set working directory
 WORKDIR /app
 
@@ -14,17 +10,18 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements file
-COPY requirements.txt .
-
 # Install Python dependencies
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the project
+# Copy project files
 COPY . .
 
-# Expose port 80
-EXPOSE 80
+# Run migrations and collect static files
+RUN python manage.py collectstatic --noinput
 
-# Run the application with gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:80", "Learnify.wsgi:application"] 
+# Expose port
+EXPOSE 8000
+
+# Run the application
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"] 
