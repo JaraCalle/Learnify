@@ -30,9 +30,9 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgresql://learnify_db_owner:npg_xzCFuEhcqo49@ep-quiet-bread-a8fl2g1n-pooler.eastus2.azure.neon.tech/learnify_db?sslmode=require
+      - POSTGRES_USER=learnify_db_owner
+      - POSTGRES_PASSWORD=npg_xzCFuEhcqo49
 
 volumes:
   postgres_data:
