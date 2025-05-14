@@ -1,0 +1,84 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "error": "Error",
+    "retry": "Reintentar",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "search": "Buscar",
+    "noResults": "No se encontraron resultados"
+  },
+  "home": {
+    "hero": {
+      "title": "La Escuela De Tecnología\nEnfocada En Ti",
+      "subtitle": "Aprende y crece con los mejores cursos de tecnología",
+      "description": "Únete a nuestra comunidad de estudiantes y comienza tu viaje hoy"
+    },
+    "search": {
+      "placeholder": "Buscar cursos...",
+      "title": "¿Quieres empezar?"
+    },
+    "tags": {
+      "popular": "Popular",
+      "explore": "Explorar",
+      "topRated": "Mejor valorados"
+    },
+    "teach": {
+      "title": "¿Quieres\nEnseñar?",
+      "cta": "Registrarse"
+    }
+  },
+  "auth": {
+    "login": "Iniciar Sesión",
+    "register": "Registrarse",
+    "logout": "Cerrar Sesión",
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "rememberMe": "Recordarme",
+    "noAccount": "¿No tienes una cuenta?",
+    "hasAccount": "¿Ya tienes una cuenta?"
+  },
+  "cart": {
+    "title": "Carrito de Compras",
+    "empty": "Tu carrito está vacío",
+    "emptyMessage": "Parece que aún no has agregado ningún curso a tu carrito.",
+    "browseCourses": "Explorar Cursos",
+    "totalItems": "Total de Items",
+    "clearCart": "Vaciar Carrito",
+    "checkout": "Proceder al Pago",
+    "removeItem": "Eliminar Item",
+    "addToCart": "Agregar al Carrito",
+    "addedToCart": "Agregado al Carrito",
+    "error": {
+      "fetch": "Error al cargar el carrito",
+      "add": "Error al agregar al carrito",
+      "remove": "Error al eliminar del carrito",
+      "clear": "Error al vaciar el carrito",
+      "auth": "Por favor inicia sesión para acceder a tu carrito"
+    }
+  },
+  "courses": {
+    "title": "Cursos",
+    "search": "Buscar cursos...",
+    "filter": "Filtrar",
+    "sort": "Ordenar por",
+    "categories": "Categorías",
+    "price": "Precio",
+    "duration": "Duración",
+    "level": "Nivel",
+    "instructor": "Instructor",
+    "enroll": "Inscribirse",
+    "viewDetails": "Ver Detalles",
+    "noCourses": "No se encontraron cursos"
+  },
+  "errors": {
+    "general": "Algo salió mal",
+    "notFound": "Página no encontrada",
+    "unauthorized": "Por favor inicia sesión para continuar",
+    "forbidden": "No tienes permiso para acceder a este recurso",
+    "serverError": "Error del servidor, por favor intenta más tarde"
+  }
+}
