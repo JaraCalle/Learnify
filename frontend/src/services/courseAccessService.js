@@ -1,11 +1,12 @@
 import axios from "axios";
 import { makeUrl } from "@/utils/url";
-import { useSession } from "next-auth/react";
+import { auth } from "@/lib/auth";
 
-export const checkCourseAccess = async (courseId, accessToken) => {
+export const checkCourseAccess = async (courseId) => {
 
+  const session = await auth();
+  const accessToken = session?.user?.accessToken;
 
-  session.user.accessToken
   try {
     const response = await axios.get(
       makeUrl(
