@@ -18,7 +18,8 @@ import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
 import { useRouter } from "next/navigation";
 import { UploadCloud } from "lucide-react";
-
+import { createCourse } from "@/services/courseService";  
+import { toast } from "sonner";
 function CreateCoursePage() {
   const { data: session } = useSession();
   const router = useRouter();
@@ -57,34 +58,16 @@ function CreateCoursePage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = session.accessToken;
-    const url = "http://localhost:8000/courses/";
-
-    // Create FormData to handle file upload
-    const formData = new FormData();
-
-    // Add all form fields to FormData
-    Object.keys(formState).forEach((key) => {
-      if (key !== "thumbnail" || formState[key] !== null) {
-        formData.append(key, formState[key]);
-      }
-    });
-
     try {
-      const response = await axios.post(url, formData, {
-        headers: {
-          Authorization: `Token ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      console.log(response);
-      const courseData = response.data;
+      const courseData = await createCourse(formState);
       setFormState(initialFormState);
       setPreviewThumbnail(null);
       router.push(`/courses/${courseData.id}`);
+      toast.success("Course created successfully");
+      toast.error("Course creation failed");
     } catch (error) {
       console.error(error);
+      toast.error("Course creation failed");
     }
   };
 

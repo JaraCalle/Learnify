@@ -90,7 +90,7 @@ def confirm_payment(request):
         
         # Verify the payment intent
 
-        intent = intent.confirm(payment_method=payment_method_id, return_url="http://localhost:3000/")   
+        intent = intent.confirm(payment_method=payment_method_id, return_url=settings.FRONT_END_BASE_URL)   
 
         print('intent', intent)
         

@@ -82,7 +82,7 @@ export default function CheckoutPage() {
       await confirmPayment(paymentIntentId, paymentMethod.id, session.accessToken);
       clearCartMutation();
       toast.success("Payment successful! You now have access to your courses.");
-      router.push("/courses/my-courses");
+      router.push("/courses/owned");
     } catch (error) {
       console.error("Payment confirmation   failed:", error);
       toast.error("Payment confirmation failed. Please contact support.");
