@@ -2,7 +2,8 @@ import axios from 'axios';
 import { getSession } from 'next-auth/react';
 import { makeUrl } from './url';
 
-const API_BASE = process.env.BACKEND_API_BASE || "http://127.0.0.1:8000/api";
+const API_BASE =
+  process.env.NEXT_PUBLIC_BACKEND_API_BASE+'/api' || "http://127.0.0.1:8000/api";
 
 /**
  * Create an axios instance with authorization header

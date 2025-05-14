@@ -7,7 +7,11 @@ import { makeUrl } from "./utils/url";
 
 const options = {
   providers: [
-    Google,
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      checks: ["none"],
+    }),
   ],
   session: {
     strategy: "jwt",
@@ -18,14 +22,12 @@ const options = {
   callbacks: {
     async signIn({ user, account, profile }) {
       if (account.provider === "google") {
-    
         const { access_token, id_token } = account;
 
         try {
-         
           const response = await axios.post(
             makeUrl(
-              process.env.NEXT_PUBLIC_BACKEND_API_BASE+'/api',
+              process.env.NEXT_PUBLIC_BACKEND_API_BASE + "/api",
               "social",
               "login",
               "google"
@@ -36,7 +38,6 @@ const options = {
           );
 
           user.accessToken = response.data.key;
-        
           return true;
         } catch (error) {
           console.log("error", error);
