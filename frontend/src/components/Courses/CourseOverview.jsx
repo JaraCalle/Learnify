@@ -1,8 +1,6 @@
 "use client";
-import React from "react";
-import img from "@public/card-test.png";
+import React, { useState, useEffect }   from "react";
 import { CardDescription } from "@/components/ui/Card";
-import BackgroundImage from "@/components/BackgroundImage";
 import ReviewStars from "@/components/Courses/ReviewStars";
 import CourseDetails from "@/components/Courses/CourseDetails";
 import BackgroundBlur from "@/components/BackgroundBlur";
@@ -10,34 +8,91 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { useCart } from "@/providers/CartProvider";
 import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { IoMdClose } from "react-icons/io";
+import { useSession } from "next-auth/react";
 import {
   MdOutlineShoppingCart,
   MdOutlineShoppingCartCheckout,
+  MdDelete,
 } from "react-icons/md";
+import Image from "next/image";
+import { addToCart, removeFromCart, getCart } from "@/services/cartService";
+import { getOwnedCourses } from "@/services/courseService";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
-function CourseOverview({ course, className, isCart }) {
 
-    const path = usePathname();
-    const isCartPath = path === "/cart";
 
-    console.log('RACC INSTANCE',JSON.stringify(course));
-  const { addToCart, removeFromCart, isInCart } = useCart();
+function CourseOverview({ course, className }) {
+  const path = usePathname();
+  const isCartPath = path === "/cart";
+  const { data: session } = useSession();
+
+  const router = useRouter();
+  const [isInCart, setIsInCart] = useState(false);
+  const [isInOwnedCourses, setIsInOwnedCourses] = useState(false);
+
+
+  
+
+  const { data: cart } = useQuery({
+    queryKey: ["cart"],
+    queryFn: getCart,
+  });
+
+  const { data: ownedCourses } = useQuery({
+    queryKey: ["ownedCourses"],
+    queryFn: getOwnedCourses,
+  });
+
+
+
+
+  
+
+  const { mutate: addToCartMutation } = useMutation({
+    mutationFn: addToCart,
+  });
+
+  const { mutate: removeFromCartMutation } = useMutation({
+    mutationFn: removeFromCart,
+  });
+
+  
+
+
+
+  useEffect(() => {
+    setIsInCart(cart?.courses?.some((item) => item.id === course.id));
+  }, [cart]);
+
+  useEffect(() => {
+    setIsInOwnedCourses(ownedCourses?.some((item) => item.id === course.id));
+  }, [ownedCourses]);
+
+
+  const handleRemoveFromCart = () => {
+    removeFromCartMutation(course.id);
+  };
+
+  
+
 
   const handleCartAction = () => {
-    if (isInCart(course.id)) {
-      removeFromCart(course.id);
+    if (!session) {
+      router.push("/auth");
+      return;
+    }
+    if (isInCart) { 
+      handleRemoveFromCart();
+      setIsInCart(false);
     } else {
-      addToCart(course);
+      addToCartMutation(course.id);
+      setIsInCart(true);
     }
   };
 
-  const removeCourse = () => {
-    removeFromCart(course.id);
-    }
-
-
-
+  
   return (
     <div
       className={`flex w-full relative items-stretch gap-12 max-w-7xl ${className}`}
@@ -45,14 +100,22 @@ function CourseOverview({ course, className, isCart }) {
       {isCartPath && (
         <div className="absolute top-0 right-0">
           <IoMdClose
-            onClick={removeCourse}
+            onClick={handleRemoveFromCart}
             className="size-8 text-neutral-800 cursor-pointer hover:fill-white transition-colors duration-300"
           />
         </div>
       )}
       <Card className="w-3/5 h-[450px] p-4 border-2 dark:bg-transparent">
-        <div className={"relative h-full rounded overflow-clip "}>
-          <BackgroundImage className={"z-0 h-auto"} image={img} />
+        <div className="relative size-full">
+          <Image
+            src={
+              course.thumbnail_url ||
+              "https://support.heberjahiz.com/hc/article_attachments/21013076295570"
+            }
+            alt="Course thumbnail preview"
+            fill
+            className="object-cover rounded-md"
+          />
         </div>
       </Card>
       <div className="flex flex-col  w-2/5 gap-8 justify-between">
@@ -65,14 +128,23 @@ function CourseOverview({ course, className, isCart }) {
           <CourseDetails course={course} />
         </div>
         <CardDescription>{course.description}</CardDescription>
+        
+        {!isInOwnedCourses &&
         <Button className={"w-fit"}>{course.price} USD</Button>
-
-        {!isCartPath &&
-          (isInCart(course.id) ? (
+        }
+            {/* Green Button for owned courses */}
+        {isInOwnedCourses ? (
+          <Button variant={"outline"} >
+            <MdOutlineShoppingCartCheckout className="mr-2" />
+            Owned
+          </Button>
+        ) : (
+        !isCartPath &&
+          (isInCart ? (
             <Button
               variant={"destructive"}
               className={"w-fit"}
-              onClick={removeCourse}
+              onClick={() => removeFromCartMutation(course.id)}
             >
               <MdOutlineShoppingCartCheckout className="mr-2" />
               Remove from Cart
@@ -91,7 +163,9 @@ function CourseOverview({ course, className, isCart }) {
                 </Button>
               </BackgroundBlur>
             </div>
-          ))}
+          ))
+        )
+        }
       </div>
     </div>
   );

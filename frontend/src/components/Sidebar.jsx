@@ -12,19 +12,14 @@ import { Button } from "./ui/Button";
 import CreateNewCourse from "./Courses/CreateNewCourse";
 
 function Sidebar({ close, session, update }) {
-
-
   const ref = useRef(null);
 
   useClickOutside(ref, () => close());
 
-
-
   const handleLogOut = () => {
     logout();
     close();
-  }
-
+  };
 
   return (
     <div
@@ -41,7 +36,10 @@ function Sidebar({ close, session, update }) {
               <TiHome className="size-6" />
               <p className="text-xl">Home</p>
             </Link>
-            <Link className="flex items-center justify-start gap-4" href="/">
+            <Link
+              className="flex items-center justify-start gap-4"
+              href="/courses/owned"
+            >
               <BiWindows className="size-6" />
               <p className="text-xl">Owned Courses</p>
             </Link>
@@ -49,31 +47,34 @@ function Sidebar({ close, session, update }) {
               <FaUser className="size-6" />
               <p className="text-xl">My Profile</p>
             </Link>
-            <Link className="flex items-center justify-start gap-4" href="/">
+            <Link
+              className="flex items-center justify-start gap-4"
+              href="/cart"
+            >
               <IoCart className="size-6" />
               <p className="text-xl">Cart</p>
             </Link>
 
-            <div className="py-10 "> {session?.user && (
-              <Button
-                onClick={handleLogOut}
-                className={
-                  "relative inline-flex items-center justify-center p-0  overflow-hidden text-sm font-medium text-gray-900  group bg-gradient-to-br "
-                }
-              >
-                <span className="relative px-5 py-2.5 text-white ">
-                  Log out
-                </span>
-              </Button>
-            )}
+            <div className="py-10 ">
+              {" "}
+              {session?.user && (
+                <Button
+                  onClick={handleLogOut}
+                  className={
+                    "relative inline-flex items-center justify-center p-0  overflow-hidden text-sm font-medium text-gray-900  group bg-gradient-to-br "
+                  }
+                >
+                  <span className="relative px-5 py-2.5 text-white ">
+                    Log out
+                  </span>
+                </Button>
+              )}
             </div>
           </div>
-
         </div>
       </div>
       <div>
         <CreateNewCourse image="/avatar.jpg" author={session.user} />
-
       </div>
     </div>
   );

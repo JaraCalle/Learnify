@@ -1,20 +1,16 @@
 import React from "react";
 import axios from "axios";
 import CourseOverview from "@/components/Courses/CourseOverview";
+import { getCourse } from "@/services/courseService";
 
 async function CoursePage({ params }) {
   const { courseId } = await params;
 
-  const course = await axios.get(`http://127.0.0.1:8000/courses/${courseId}/`)
-    .then((res) => res.data)
-    .catch((error) => {
-      console.error("Error fetching course", error);
-      return [];
-    });
+  const course = await getCourse(courseId);
 
   return (
     <div className="flex flex-col w-full items-center justify-start page-wrapper">
-      <CourseOverview course={course}  />
+      <CourseOverview course={course} />
     </div>
   );
 }

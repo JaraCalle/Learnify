@@ -1,27 +1,36 @@
 "use client";
-import { jsxDEV } from "react/jsx-dev-runtime";
+import { useState, useEffect } from "react";
 import React from "react";
 import {
   Card,
-  CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/Card";
 import Image from "next/image";
-import cardImage from "@public/card-test.png";
 import { Button } from "@components/ui/Button";
 import BackgroundBlur from "@components/BackgroundBlur";
 import Link from "next/link";
 import CourseDetails from "@components/Courses/CourseDetails";
-import { useCart } from "@/providers/CartProvider";
-import {
-  MdOutlineShoppingCart,
-  MdOutlineShoppingCartCheckout,
-} from "react-icons/md";
+import { cn } from "@/lib/utils/cn";
+import { getOwnedCourses } from "@/services/courseService";
+import { useQuery } from "@tanstack/react-query";
+import { usePathname } from "next/navigation";
 
-function CourseCard({ course }) {
+function CourseCard({ course, className = "", description = true }) {
+
+  const pathname = usePathname();
+  const [isOwned, setIsOwned] = useState(false );
+
+  const { data: ownedCourses } = useQuery({
+    queryKey: ["ownedCourses"],
+    queryFn: getOwnedCourses,
+  });
+
+  useEffect(() => {
+    setIsOwned(ownedCourses?.some((item) => item.id === course.id) || pathname.includes('owned'));
+  }, [ownedCourses, pathname]);
 
   const ratingRangeClass =
     course?.rating_avg > 4
@@ -37,14 +46,15 @@ function CourseCard({ course }) {
       className="w-full max-w-7xl content-center"
       href={`/courses/${course.id}`}
     >
-      <Card className="flex-row justify-start gap-0 dark:bg-transparent p-0 overflow-clip border-2 bg-white h-72 relative">
-       
-
+      <Card className={cn("flex-row justify-start gap-0 dark:bg-transparent p-0 overflow-clip border-2 bg-white h-72 relative", className)}>
         {/* Existing Card Content */}
-        <div className="relative w-2/3 h-">
+        <div className="relative w-full min-h-52">
           <Image
             alt="Grid"
-            src={cardImage}
+            src={
+              course.thumbnail_url ||
+              "https://support.heberjahiz.com/hc/article_attachments/21013076295570"
+            }
             quality={100}
             fill
             sizes="100vw"
@@ -56,11 +66,14 @@ function CourseCard({ course }) {
             <CardTitle className={"text-xl"}>
               <h1>{course.title}</h1>
             </CardTitle>
-            <CardDescription className={"text-lg "}>
+            {description && (
+              <CardDescription className={"text-lg "}>
+                
               <p className="overflow-hidden text-ellipsis">
                 {course.description}
-              </p>
-            </CardDescription>
+                </p>
+              </CardDescription>
+            )}
           </CardHeader>
           <CardFooter
             className={
@@ -68,8 +81,11 @@ function CourseCard({ course }) {
             }
           >
             <CourseDetails course={course} />
+            
             <div className="flex gap-4">
-              <Button size={"xl"}>{course.price} USD</Button>
+              {!isOwned && (
+                <Button size={"xl"}>{course.price} USD</Button>
+              )}
               <BackgroundBlur
                 color={`bg-linear-to-b  ${ratingRangeClass}`}
                 size="lg"
