@@ -1,9 +1,10 @@
-from rest_framework.serializers import ModelSerializer, ValidationError
+from rest_framework.serializers import ModelSerializer, ValidationError, SerializerMethodField
 from auth_users.serializers import UserSerializer
 from .models import Course
 
 class CourseSerializer(ModelSerializer):
     instructor = UserSerializer(read_only=True)
+    thumbnail_url = SerializerMethodField()
 
     class Meta:
         model = Course
@@ -19,7 +20,18 @@ class CourseSerializer(ModelSerializer):
             "price",
             "status",
             "rating_avg",
+            "thumbnail",
+            "thumbnail_url",
         ]
+        extra_kwargs = {
+            'thumbnail': {'write_only': True}
+        }
+
+    def get_thumbnail_url(self, obj):
+        if obj.thumbnail:
+            return obj.thumbnail.url
+        return None
+
 
     def create(self, validated_data):
         """Create a new course"""
@@ -39,5 +51,6 @@ class CourseSerializer(ModelSerializer):
             category=validated_data["category"],
             price=validated_data["price"],
             status=validated_data["status"],
+            thumbnail=validated_data["thumbnail"]
         )
         return course

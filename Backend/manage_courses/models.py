@@ -2,6 +2,7 @@ import uuid
 from django.db import models
 from auth_users.models import User
 from django.db.models import Avg
+from storages.backends.s3boto3 import S3Boto3Storage
 
 class Course(models.Model):
     instructor = models.ForeignKey(User, on_delete=models.CASCADE, related_name="courses")
@@ -13,6 +14,12 @@ class Course(models.Model):
     estimated_duration = models.IntegerField(default=0)
     difficulty = models.CharField(max_length=20, choices=[("beginner", "Beginner"), ("intermediate", "Intermediate"), ("advanced", "Advanced")], default='beginner')
     created_at = models.DateTimeField(auto_now_add=True)
+    thumbnail = models.ImageField(
+        upload_to='courses/thumbnails/',
+        storage=S3Boto3Storage(),
+        blank=True,
+        null=True
+    )
     
     class Meta:
         verbose_name = "Course"

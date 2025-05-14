@@ -1,0 +1,84 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "retry": "Retry",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "search": "Search",
+    "noResults": "No results found"
+  },
+  "home": {
+    "hero": {
+      "title": "The Technology School\nFocused On You",
+      "subtitle": "Learn and grow with the best technology courses",
+      "description": "Join our community of learners and start your journey today"
+    },
+    "search": {
+      "placeholder": "Search for courses...",
+      "title": "Want to start?"
+    },
+    "tags": {
+      "popular": "Popular",
+      "explore": "Explore",
+      "topRated": "Top-rated"
+    },
+    "teach": {
+      "title": "Want To\nTeach?",
+      "cta": "Sign Up"
+    }
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot Password?",
+    "rememberMe": "Remember Me",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?"
+  },
+  "cart": {
+    "title": "Shopping Cart",
+    "empty": "Your cart is empty",
+    "emptyMessage": "Looks like you haven't added any courses to your cart yet.",
+    "browseCourses": "Browse Courses",
+    "totalItems": "Total Items",
+    "clearCart": "Clear Cart",
+    "checkout": "Proceed to Checkout",
+    "removeItem": "Remove Item",
+    "addToCart": "Add to Cart",
+    "addedToCart": "Added to Cart",
+    "error": {
+      "fetch": "Error loading cart",
+      "add": "Error adding to cart",
+      "remove": "Error removing from cart",
+      "clear": "Error clearing cart",
+      "auth": "Please login to access your cart"
+    }
+  },
+  "courses": {
+    "title": "Courses",
+    "search": "Search courses...",
+    "filter": "Filter",
+    "sort": "Sort by",
+    "categories": "Categories",
+    "price": "Price",
+    "duration": "Duration",
+    "level": "Level",
+    "instructor": "Instructor",
+    "enroll": "Enroll Now",
+    "viewDetails": "View Details",
+    "noCourses": "No courses found"
+  },
+  "errors": {
+    "general": "Something went wrong",
+    "notFound": "Page not found",
+    "unauthorized": "Please login to continue",
+    "forbidden": "You don't have permission to access this resource",
+    "serverError": "Server error, please try again later"
+  }
+}

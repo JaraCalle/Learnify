@@ -32,7 +32,7 @@ const options = {
             ),
             {
               access_token,
-              id_token,
+
             }
           );
 

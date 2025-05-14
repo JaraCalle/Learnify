@@ -17,7 +17,7 @@ class Order(models.Model):
 class Cart(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="cart")
-    courses = models.ForeignKey(Course, on_delete=models.CASCADE)
+    courses = models.ManyToManyField(Course, related_name="carts")
     created_at = models.DateTimeField(auto_now_add=True)
     
     class Meta:
