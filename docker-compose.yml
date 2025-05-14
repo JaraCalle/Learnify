@@ -8,13 +8,13 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NEXT_PUBLIC_API_URL=http://backend:8000
+      - NEXT_PUBLIC_API_URL=http://Backend:8000
     depends_on:
       - backend
 
   backend:
     build:
-      context: ./backend
+      context: ./Backend
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
@@ -23,7 +23,7 @@ services:
       - SECRET_KEY=${DJANGO_SECRET_KEY}
       - DATABASE_URL=${DATABASE_URL}
     volumes:
-      - ./backend:/app
+      - ./Backend:/app
     depends_on:
       - db
 
