@@ -6,19 +6,22 @@ WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
-COPY bun.lock ./
 
 # Install dependencies
 RUN npm install
 
-# Copy the rest of the application
+# Copy all files
 COPY . .
 
 # Build the application
 RUN npm run build
 
-# Expose the port the app runs on
-EXPOSE 3000
+# Expose port 80
+EXPOSE 80
+
+# Set environment variables
+ENV PORT=80
+ENV NODE_ENV=production
 
 # Start the application
 CMD ["npm", "start"] 
