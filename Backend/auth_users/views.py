@@ -11,7 +11,7 @@ from .serializers import UserSerializer
 class GoogleLoginView(SocialLoginView):
     auyhentication_classes = []
     adapter_class = GoogleOAuth2Adapter
-    callback_url ='localhost:3000' # CHANGE TO THIS LATER ON WHEN IN DEPLOYMENT settings.SITE_URL
+    callback_url = settings.FRONT_END_BASE_URL
     client_class = OAuth2Client
     
 class UserDetailByEmailView(RetrieveAPIView):

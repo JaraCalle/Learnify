@@ -235,3 +235,6 @@ STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 # Stripe settings
 STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY')
 STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
+
+# Frontend URL
+FRONT_END_BASE_URL = os.getenv('FRONT_END_BASE_URL', 'http://localhost:3000')

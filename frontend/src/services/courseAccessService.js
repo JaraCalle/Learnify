@@ -34,7 +34,7 @@ export const getUserCourses = async (accessToken) => {
       makeUrl(
         process.env.NEXT_PUBLIC_BACKEND_API_BASE,
         "courses",
-        "my-courses"
+        "owned"
       ),
       {
         headers: {

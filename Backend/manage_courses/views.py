@@ -29,3 +29,4 @@ class CourseDetailView(generics.RetrieveAPIView):
 def get_owned_courses(request):
     owned_courses = request.user.owned_courses.all()
     return Response(CourseSerializer(owned_courses, many=True).data)
+

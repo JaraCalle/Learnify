@@ -129,3 +129,27 @@ export const getCourse = async (courseId) => {
     throw error;
   }
 };
+export const createCourse = async (courseData) => {
+  const session = await auth();
+  const accessToken = session?.accessToken;
+
+  if (!accessToken) {
+    throw new Error("No authentication token available");
+  }
+
+  const endpointUrl = new URL(BASE_URL);
+
+  const response = await axios.post(endpointUrl.toString(), courseData, {
+    headers: {
+      Authorization: `Token ${accessToken}`,
+    },
+  });
+
+  if (!response.data) {
+    throw new Error("No data received from the server");
+  }
+
+
+  return response.data;
+
+};
