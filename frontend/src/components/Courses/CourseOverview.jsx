@@ -18,6 +18,7 @@ import {
 } from "react-icons/md";
 import Image from "next/image";
 import { addToCart, removeFromCart, getCart } from "@/services/cartService";
+import { getOwnedCourses } from "@/services/courseService";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 
@@ -26,8 +27,10 @@ function CourseOverview({ course, className }) {
   const path = usePathname();
   const isCartPath = path === "/cart";
   const { data: session } = useSession();
+
   const router = useRouter();
   const [isInCart, setIsInCart] = useState(false);
+  const [isInOwnedCourses, setIsInOwnedCourses] = useState(false);
 
 
   
@@ -36,6 +39,13 @@ function CourseOverview({ course, className }) {
     queryKey: ["cart"],
     queryFn: getCart,
   });
+
+  const { data: ownedCourses } = useQuery({
+    queryKey: ["ownedCourses"],
+    queryFn: getOwnedCourses,
+  });
+
+
 
 
   
@@ -48,11 +58,17 @@ function CourseOverview({ course, className }) {
     mutationFn: removeFromCart,
   });
 
+  
+
 
 
   useEffect(() => {
-    setIsInCart(cart.courses.some((item) => item.id === course.id));
+    setIsInCart(cart?.courses?.some((item) => item.id === course.id));
   }, [cart]);
+
+  useEffect(() => {
+    setIsInOwnedCourses(ownedCourses?.some((item) => item.id === course.id));
+  }, [ownedCourses]);
 
 
   const handleRemoveFromCart = () => {
@@ -112,9 +128,18 @@ function CourseOverview({ course, className }) {
           <CourseDetails course={course} />
         </div>
         <CardDescription>{course.description}</CardDescription>
+        
+        {!isInOwnedCourses &&
         <Button className={"w-fit"}>{course.price} USD</Button>
-
-        {!isCartPath &&
+        }
+            {/* Green Button for owned courses */}
+        {isInOwnedCourses ? (
+          <Button variant={"outline"} >
+            <MdOutlineShoppingCartCheckout className="mr-2" />
+            Owned
+          </Button>
+        ) : (
+        !isCartPath &&
           (isInCart ? (
             <Button
               variant={"destructive"}
@@ -138,7 +163,9 @@ function CourseOverview({ course, className }) {
                 </Button>
               </BackgroundBlur>
             </div>
-          ))}
+          ))
+        )
+        }
       </div>
     </div>
   );
