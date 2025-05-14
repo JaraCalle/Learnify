@@ -29,7 +29,18 @@ SECRET_KEY = 'django-insecure-=e_4(z6ph)mlwe-4a=pc5(vf@qp!dt91l-yabsf_8m3nlqm1%^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# Frontend URL
+FRONT_END_BASE_URL = os.getenv('FRONT_END_BASE_URL', 'http://localhost:3000')
+
+# Extract domain from FRONT_END_BASE_URL for ALLOWED_HOSTS
+frontend_domain = urlparse(FRONT_END_BASE_URL).netloc
+
+ALLOWED_HOSTS = [
+    frontend_domain,
+    'localhost',
+    '127.0.0.1',
+    'learnify-deploy-1.onrender.com'  # Your production domain
+]
 
 
 # Application definition
@@ -235,6 +246,3 @@ STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 # Stripe settings
 STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY')
 STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
-
-# Frontend URL
-FRONT_END_BASE_URL = os.getenv('FRONT_END_BASE_URL', 'http://localhost:3000')
