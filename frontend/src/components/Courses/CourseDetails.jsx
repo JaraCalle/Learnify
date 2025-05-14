@@ -3,7 +3,6 @@ import TagList from '@/components/TagList';
 
 function CourseDetails({course}) {
 
-    console.log(course);
 
     const { difficulty, estimated_duration, instructor } = course;
     const {username} = instructor;
