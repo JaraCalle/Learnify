@@ -13,11 +13,11 @@ RUN npm install
 # Copy all files
 COPY . .
 
-# Increase Node.js memory limit and add optimization flags
+# Set build-time environment variables
 ENV NODE_OPTIONS="--max-old-space-size=4096 --max-semi-space-size=512"
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Build the application with production optimization
+# Build the application
 RUN npm run build
 
 # Production stage
@@ -34,7 +34,7 @@ COPY --from=builder /app/node_modules ./node_modules
 # Expose port 3000
 EXPOSE 3000
 
-# Set environment variables
+# Set runtime environment variables
 ENV NODE_ENV=production
 ENV PORT=3000
 ENV NEXT_TELEMETRY_DISABLED=1
