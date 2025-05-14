@@ -37,7 +37,6 @@ export default async function Home({ params }) {
             >
               <h1 className="text-6xl font-bold w-fit whitespace-pre-line">
                 {t.home.hero.title}
-
               </h1>
               <p className="w-full text-2xl">{t.home.hero.subtitle}</p>
               <p className="text-lg text-muted-foreground">
@@ -67,11 +66,11 @@ export default async function Home({ params }) {
         {!session?.user && (
           <aside className="flex flex-col gap-8 items-end text-start justify-center">
             <h1 className="text-5xl font-light text-end whitespace-pre-line">
-              {t("home.teach.title")}
+              {t.home.teach.title}
             </h1>
             <Link href="/auth">
               <Button className="dark:bg-black rounded-none">
-                {t("home.teach.cta")}
+                {t.home.teach.cta}
               </Button>
             </Link>
           </aside>
