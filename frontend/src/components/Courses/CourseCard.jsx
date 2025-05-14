@@ -21,7 +21,7 @@ import { usePathname } from "next/navigation";
 function CourseCard({ course, className = "", description = true }) {
 
   const pathname = usePathname();
-  const [isOwned, setIsOwned] = useState(pathname.includes("owned") );
+  const [isOwned, setIsOwned] = useState(false );
 
   const { data: ownedCourses } = useQuery({
     queryKey: ["ownedCourses"],
@@ -29,8 +29,8 @@ function CourseCard({ course, className = "", description = true }) {
   });
 
   useEffect(() => {
-    setIsOwned(ownedCourses?.some((item) => item.id === course.id));
-  }, [ownedCourses]);
+    setIsOwned(ownedCourses?.some((item) => item.id === course.id) || pathname.includes('owned'));
+  }, [ownedCourses, pathname]);
 
   const ratingRangeClass =
     course?.rating_avg > 4
